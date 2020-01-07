@@ -6,6 +6,7 @@ use App\Subcategory;
 use App\Category;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class SubcategoryController extends Controller
 {
@@ -49,13 +50,24 @@ class SubcategoryController extends Controller
      */
     public function store(Request $request)
     {
+        $subcategory = new Subcategory;
         $requestvalidate =  $request->validate([
             'category_id' => 'required|numeric',
             'subcategory_name' => 'required|max:255',
             'status' => 'required|numeric',
+            'image'  => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        $subcategory = new Subcategory;
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $name = str_slug(md5(time())).'.'.$image->getClientOriginalExtension();
+            $destinationPath = public_path('/uploads/subcategory');
+            $imagePath = $destinationPath. "/".  $name;
+            $image->move($destinationPath, $name);
+            $subcategory->image_url = 'uploads/subcategory/'.$name;
+        }
+
+        
         $subcategory->category_id = $request->category_id;
         $subcategory->name = $request->subcategory_name;
         $subcategory->is_active = $request->status;
@@ -101,7 +113,22 @@ class SubcategoryController extends Controller
             'category_id' => 'required|numeric',
             'subcategory_name' => 'required|max:255',
             'status' => 'required|numeric',
+            'image'  => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $name = str_slug(md5(time())).'.'.$image->getClientOriginalExtension();
+            $destinationPath = public_path('/uploads/subcategory');
+            $imagePath = $destinationPath. "/".  $name;
+            $image->move($destinationPath, $name);
+            $image_path = $subcategory->image_url;
+            if($image_path){
+                unlink($image_path);
+            }
+            $subcategory->image_url = 'uploads/subcategory/'.$name;
+        }
+
         $subcategory->category_id = $request->category_id;
         $subcategory->name = $request->subcategory_name;
         $subcategory->is_active = $request->status;
@@ -118,6 +145,10 @@ class SubcategoryController extends Controller
      */
     public function destroy(Subcategory $subcategory)
     {
+        $image_path = $subcategory->image_url;
+        if($image_path){
+            unlink($image_path);
+        }
         $subcategory->delete();
         return redirect()->route('subcategory.index')->with('success', 'Subcategory deleted successfully.');
     }

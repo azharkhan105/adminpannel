@@ -34,7 +34,7 @@
 					        </ul>
 					    </div>
 					@endif
-					<form role="form" method="post" action="{{ route('subcategory.store') }}">
+					<form role="form" method="post" action="{{ route('subcategory.store') }}" enctype="multipart/form-data">
 					@csrf
 						<div class="card-body">
 							<div class="form-group">
@@ -51,6 +51,20 @@
 								<label for="subcategory_name">Subcategory Name</label>
 								<input type="text" class="form-control" id="subcategory_name" placeholder="Subcategory Name" name="subcategory_name">
 							</div>
+
+							<div class="form-group">
+			                    <label for="exampleInputFile">Subcategory Image</label>
+			                    <div class="input-group">
+			                      	<div class="custom-file">
+			                        	<input type="file" class="custom-file-input" id="exampleInputFile" name="image">
+			                        	<label class="custom-file-label" for="exampleInputFile">Choose file</label>
+			                      	</div>
+			                      	<div class="input-group-append">
+			                        	<span class="input-group-text" id="">Upload</span>
+			                      	</div>
+			                    </div>
+			                </div>
+			                
 							<div class="form-group">
 								<label for="status">Status</label>
 								<select name="status" id="status" class="form-control">

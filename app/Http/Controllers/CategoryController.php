@@ -108,10 +108,11 @@ class CategoryController extends Controller
             $imagePath = $destinationPath. "/".  $name;
             $image->move($destinationPath, $name);
 
-            $image_path = "uploads/category/".$category->image_url;
-            Storage::delete($image_path);
+            $image_path = $category->image_url;
+            if($image_path){
+                unlink($image_path);
+            }
             //echo $image_path; exit;
-
             $category->image_url = 'uploads/category/'.$name;
         }
 
@@ -132,6 +133,10 @@ class CategoryController extends Controller
      */
     public function destroy(category $category)
     {
+        $image_path = $category->image_url;
+        if($image_path){
+            unlink($image_path);
+        }
         $category->delete();
         return redirect()->route('category.index')
                         ->with('success','Category deleted successfully');

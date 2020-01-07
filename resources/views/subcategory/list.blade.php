@@ -43,6 +43,7 @@
 									<th style="width: 10px">#</th>
 									<th>Category Name</th>
 									<th>Subcategory Name</th>
+									<th>Subcategory Image</th>
 									<th>Status</th>
 									<th style="width: 150px">Action</th>
 								</tr>
@@ -53,6 +54,11 @@
 									<td>{{ ++$i }}</td>
 									<td>{{ $subcat->cat_name }}</td>
 									<td>{{ $subcat->name }}</td>
+									<td>
+										@if($subcat->image_url !='')
+										<img src="{{ asset($subcat->image_url) }}" style="width: 100px; height: 100px;">
+										@endif
+									</td>
 									<td>@if($subcat->is_active == 1) Active @else Inactive @endif</td>
 									<td>
 										<form action="{{ route('subcategory.destroy',$subcat->id) }}" method="POST">
